@@ -69,8 +69,8 @@
                         <td>{{$row['description']}}</td>
                         <td>{{$row['keywords']}}</td>
                         <td>
-                            <a href="#">修改</a>
-                            <a href="#">删除</a>
+                            <a href="{{url('admin/category/'.$row->id.'/edit')}}">修改</a>
+                            <a href="{{url('admin/category/'.$row->id)}}" class="delete">删除</a>
                         </td>
                     </tr>
                     @endforeach
@@ -121,6 +121,17 @@
                         window.location.reload(true);
                  }
             });
+        });
+
+        $(".delete").click(function(){
+            var url = $(this).attr('href');
+            $.post(url,{'_method':'delete','_token':'{{csrf_token()}}'},function(data){
+                 if(data.success){
+                        alert(data.msg);
+                        window.location.reload(true);
+                 }
+            });
+            return false;
         });
 
 

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Input;
 
 class CategoryController extends Controller
 {
@@ -69,7 +70,10 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-        //
+        $category = Category::find($id);
+        $rows = Category::getTreeList();
+
+        return view("admin/category/edit",compact("rows","category"));
     }
 
     /**
@@ -81,7 +85,13 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $all = $request->all();
+        $category = Category::findOrFail($id); //先找到
+        if($category->update($all)!==false){
+            return redirect("admin/category");
+        }else{
+            return back()->with("msg","更新失败!");
+        }
     }
 
     /**
@@ -92,7 +102,16 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $result = [
+            "success"=>true,
+        ];
+        if(Category::destroy($id)!==false){
+            $result['msg'] = '删除成功!';
+        }else{
+            $result['success']= true;
+            $result['msg'] = '删除成功!';
+        }
+        return response()->json($result);
     }
 
     public function changeOrd(Request $request){
